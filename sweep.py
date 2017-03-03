@@ -27,36 +27,34 @@ def frequencies():
         f += step
     yield f2
 
-if __name__ == "__main__":
+print("It will take %f hours" % ((f2-f1) / step * repetitions * (pulse_time + pause_time) /3600))
 
-    print("It will take %f hours" % ((f2-f1) / step * repetitions * (pulse_time + pause_time) /3600))
-
-    gen = DG1022('/dev/usbtmc0')
-    gen.sinusoid()
-    time.sleep(0.1)
-    gen.voltage(vpp)
-    time.sleep(0.1)
+gen = DG1022('/dev/usbtmc0')
+gen.sinusoid()
+time.sleep(0.1)
+gen.voltage(vpp)
+time.sleep(0.1)
 
 
-    timestamp()
-    print("Beginning sweep")
+timestamp()
+print("Beginning sweep")
 
-    for f in frequencies():
-        print("f = %.3f" % f)
-        gen.frequency(f)
-        time.sleep(freq_change_time)
-        for i in range(5):
-            timestamp()
-            print("ON")
-            gen.output(True)
-            time.sleep(pulse_time)
-            timestamp()
-            print("OFF")
-            gen.output(False)
-            if i < 4:
-                time.sleep(pause_time)
-            else:
-                time.sleep(pause_time - freq_change_time)
+for f in frequencies():
+    print("f = %.3f" % f)
+    gen.frequency(f)
+    time.sleep(freq_change_time)
+    for i in range(5):
+        timestamp()
+        print("ON")
+        gen.output(True)
+        time.sleep(pulse_time)
+        timestamp()
+        print("OFF")
+        gen.output(False)
+        if i < 4:
+            time.sleep(pause_time)
+        else:
+            time.sleep(pause_time - freq_change_time)
 
-    timestamp()
-    print("Sweep terminated")
+timestamp()
+print("Sweep terminated")
